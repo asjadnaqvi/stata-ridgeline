@@ -1,22 +1,22 @@
 {smcl}
-{* 07Jan2025}{...}
-{hi:help joyplot/ridgeline}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-joyplot":joyplot/ridgeline v1.8 (GitHub)}}
+{* 12Mar2025}{...}
+{hi:help ridgeline/joyplot}{...}
+{right:{browse "https://github.com/asjadnaqvi/stata-ridgeline":ridgeline/joyplot v1.81 (GitHub)}}
 
 {hline}
 
-{title:joyplot}: A Stata module for ridgeline plots. 
+{title:ridgeline}: A Stata module for ridgeline or joyplots. 
 
 This package is derived from the following guide on Medium: {browse "https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d":Ridgeline plots (Joy plots)}.
-{cmd:joyplot} is also mirrored as {cmd:ridgeline}.
+{cmd:ridgeline} is also mirrored as {cmd:joyplot}.
 
 {marker syntax}{title:Syntax}
 {p 8 15 2}
 
-{cmd:joyplot} {it:varlist} {ifin}, {cmd:by}({it:variable}) 
+{cmd:ridgeline} {it:varlist} {ifin}, {cmd:by}({it:variable}) 
                 {cmd:[} {cmdab:t:ime}({it:numvar}) {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:palette}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmd:lines} {cmd:droplow} {cmdab:norm:alize}({it:local} | {it:global}) 
                   {cmd:rescale} {cmdab:off:set}({it:num}) {cmdab:laboff:set}({it:num}) {cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
-                  {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmd:n}({it:num}) {cmdab:mark}({it:mark_options}) 
+                  {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmd:n}({it:num}) {cmdab:mark}({it:mark_options}) {cmd:showstats} 
                   {cmdab:legpos:ition}({it:num}) {cmdab:legcol:umns}({it:num}) {cmdab:legs:ize}({it:num}) {cmd:*} {cmd:]}
 {p 4 4 2}
 
@@ -25,12 +25,12 @@ This package is derived from the following guide on Medium: {browse "https://med
 {synopthdr}
 {synoptline}
 
-{p2coldent : {opt joyplot varlist}}The command requires a set of numerical {it:variable(s)} that can be split over {opt by()} variables. 
+{p2coldent : {opt ridgeline varlist}}The command requires a set of numerical {it:variable(s)} that can be split over {opt by()} variables. 
 If the option {opt time()} is specified, the command will draw lowess curves for each {it:varlist} and {opt time()} variable combination.
-Otherwise, kernel densities for {it:varlist} are drawn. If more than one variable is specified, then the legends are enabled. Legends will prioritize variable labels, otherwise
-variable names will be used.{p_end}
+Otherwise, kernel densities for {it:varlist} are drawn. If more than one variable is specified, then the legends are enabled.
+Legends will prioritize variable labels, otherwise variable names will be used. Here, {cmd:joyplot} can be used as a substitute for {cmd:ridgeline}.{p_end}
 
-{p2coldent : {opt t:ime(num var)}}Define a numerical time variable to see how distributions change over time.
+{p2coldent : {opt t:ime(num var)}}Define a numerical time variable if required.{p_end}
 
 {p2coldent : {opt by(variable)}}This variable defines the layers that split the data into layers. If there are fewer than 10 observations per {opt by()} group,
 the program will throw a warning message. This is important to flag since the program might not be able to generate density functions for very few observations.
@@ -39,10 +39,10 @@ Either clean these groups manually or use the {opt droplow} option to automatica
 {p2coldent : {opt droplow}}Automatically drop the {opt by()} groups with fewer than 10 observations.{p_end}
 
 {p2coldent : {opt bwid:th(num)}}A higher bandwidth value will result in higher smoothing. The default value is {opt bwid(0.1)}.
-This value might need adjustment depending on the data. Note that if you use {cmd:joyplot} and the ridge lines do not appear, then the bandwidth might need adjustment.
-In this case try increasing the bandwidth value.{p_end}
+This value might need adjustment depending on the data. Note that if you use {cmd:ridgeline} and the ridges do not appear, then the bandwidth might need adjustment.
+In this case try changing the bandwidth value using option {opt bwid()}.{p_end}
 
-{p2coldent : {opt overlap(num)}}A higher value increases the overlap, and the height of the joyplots. The default value is {opt overlap(6)} and the minimum allowed value is 1.
+{p2coldent : {opt overlap(num)}}A higher value increases the overlap, and the height of the ridgelines. The default value is {opt overlap(6)} and the minimum allowed value is 1.
 A value of {opt overlap(1)} implies that each {opt by()} group is drawn in its own horizontal space without overlaps.{p_end}
 
 {p2coldent : {opt palette(str)}}{opt palette} uses any named scheme defined in the {stata help colorpalette:colorpalette} package.
@@ -79,10 +79,14 @@ order of the categories, it is not recommended to use {opt xrev} unless absolute
 
 
 {p 4 4 2}
-{it:{ul:Mark} (beta)}
+{it:{ul:Markers and statistics} (beta)}
 
 {p2coldent : {opt mark(max [, line])}}Defining {opt mark(max)} will mark the highest point on each ridgeline. If option {opt mark(max, line)} is used, then droplines
 will be plotted instead.{p_end}
+
+{p2coldent : {opt showstats}}Show mean and standard deviation of the plotted variable. Note that this option is currently beta and only shows the values for
+the first variable in {it:varlist}. The values are plotted on the opposite side of the axis and are 75% of the marker size. These options will be improved
+in the future.{p_end}
 
 
 {p 4 4 2}
@@ -120,7 +124,7 @@ will be plotted instead.{p_end}
 
 
 
-{p2coldent : {opt n(num)}}Advanced option for increasing the number of observations for generating joyplot densities when {opt time()} is not specified. Default is {opt n(50)}.{p_end}
+{p2coldent : {opt n(num)}}Advanced option for increasing the number of observations for generating ridgeline densities when {opt time()} is not specified. Default is {opt n(50)}.{p_end}
 
 {p2coldent : {opt *}}All other standard twoway options not elsewhere specified.{p_end}
 
@@ -135,38 +139,36 @@ will be plotted instead.{p_end}
 {stata ssc install colrspace, replace}
 {stata ssc install graphfunctions, replace}
 
+
 {title:Examples}
 
-See {browse "https://github.com/asjadnaqvi/stata-joyplot":GitHub} for examples.
-
-{hline}
+See {browse "https://github.com/asjadnaqvi/stata-ridgeline":GitHub} for examples.
 
 
-{title:Suggested citation}
+{title:Citation guidelines}
 
 See {browse "https://ideas.repec.org/c/boc/bocode/s459061.html"} for the official SSC citation. 
 Please note that the GitHub version might be newer than the SSC version.
 
 
+{title:Feedback and issues}
+
+Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-ridgeline/issues":GitHub} by creating a new issue.
+
 
 {title:Package details}
 
-Version      : {bf:joyplot} v1.8
-This release : 07 Jan 2025
+Version      : {bf:ridgeline} v1.81
+This release : 12 Mar 2025
 First release: 13 Dec 2021
-Repository   : {browse "https://github.com/asjadnaqvi/joyplot":GitHub}
-Keywords     : Stata, graph, joyplot, ridgeline plot
+Repository   : {browse "https://github.com/asjadnaqvi/ridgeline":GitHub}
+Keywords     : Stata, graph, ridgeline, joyplot
 License      : {browse "https://opensource.org/licenses/MIT":MIT}
 
 Author       : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
 E-mail       : asjadnaqvi@gmail.com
 Twitter/X    : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 BlueSky      : {browse "https://bsky.app/profile/asjadnaqvi.bsky.social":@asjadnaqvi.bsky.social}
-
-
-{title:Feedback and issues}
-
-Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-joyplot/issues":GitHub} by creating a new issue.
 
 
 {title:References}
@@ -179,7 +181,7 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 {title:Other visualization packages}
 
 {psee}
-    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb graphfunctions}, {helpb joyplot}, 
-	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, {helpb sunburst}, {helpb ternary}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
+    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb graphfunctions}, 
+	{helpb marimekko}, {helpb polarspike}, {helpb ridgeline}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, {helpb sunburst}, {helpb ternary}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
 
 or visit {browse "https://github.com/asjadnaqvi":GitHub}.

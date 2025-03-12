@@ -1,7 +1,8 @@
-*! joyplot v1.8  (07 Jan 2025)
+*! ridgeline v1.81 (12 Mar 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
 
+* v1.81 (12 Mar 2025): sumstat now add mean and sd statistics (still beta)
 * v1.8  (07 Jan 2025): Port to new syntax. multiple variables are now allowed. ylab etc is now just lab. Many improvements to default variables
 *                      ylabposition is now labalt. time dimension now need the time() option. Backend data is now stacked resulting in a much faster drawing.
 *					   code is now many time faster. peaks renamed to mark()
@@ -43,7 +44,7 @@ version 15
 		[ LABOFFset(real 0) OFFset(real 0)  n(real 100) ]  ///  // v1.62 and v1.7 options
 		[ * LABColor(string) LABSize(string) labalt LABAngle(string) LABPOSition(string) LEGPOSition(real 6) LEGCOLumns(real 3) LEGSize(real 2.2) ] ///   			// v1.8
 		[ mark(string) peaksize(real 0.2) ]  ///
-		[ asis steps  ] // todo
+		[ asis steps showstats ] // todo
 	
 	/* TODO
 	add binning.
@@ -210,12 +211,11 @@ preserve
 ////////////////////
 // time variable  //
 ////////////////////	
+**# with time
 
 
 if "`time'" != "" {
 
-	*noi display in yellow "{it:time()} specified."
-	
 	foreach x of local varlist {
 		replace `x' = 0 if `x' < 0   // TODO: see how to deal with negative values. v1.6: Suggest rescale option
 	}
@@ -288,14 +288,18 @@ if "`time'" != "" {
 	// location of x-labels
 
 	gen double xpoint = .
+	gen double xstat = .
 	
 	if "`labalt'" == ""  {
 		summ `time', meanonly
 		replace xpoint = r(min) + `laboffset' if tag==1
+		replace xstat  = r(max) - `laboffset' if tag==1
+
 	}
 	else  {	
 		summ `time', meanonly
 		replace xpoint = r(max) + `laboffset' if tag==1
+		replace xstat  = r(min) - `laboffset' if tag==1
 	}
 	
 
@@ -310,6 +314,9 @@ if "`time'" != "" {
 		gen double ytop`z' = .
 		gen double peakx`z' = .
 		gen double peaky`z' = .
+		
+		gen double _mean`z' = .
+		gen double _sd`z' = .	
 
 		foreach x of local lvls {
 		
@@ -321,12 +328,11 @@ if "`time'" != "" {
 			replace ybot`z' =  `newx' / `overlap'  	if `by'==`newx'
 			replace ytop`z' = y`z'_`newx' + ybot`z'	if `by'==`newx'
 			 
+**# mark1 time
 			
 			if "`mark'"!= "" {
 				if "`mark1'"!="max" & "`mark1'"!="peak" {
-					
-					*di "No Max"
-					
+
 					summ ytop`z' if `by'==`newx', d
 					summ ytop`z' if ytop`z' >= r(`mark1') & `by'==`newx', meanonly
 					
@@ -334,13 +340,19 @@ if "`time'" != "" {
 					replace peakx`z'= `time'  if `by'==`newx' & !missing(peaky`z')
 				}
 				else {
-					*di "Yes Max"
 					
 					summ ytop`z' if `by'==`newx'
 					 
 					replace peaky`z' = ytop`z' if ytop`z'==r(max) &  `by'==`newx'
 					replace peakx`z' = `time'  if ytop`z'==r(max) &  `by'==`newx'
 				}
+			}
+			
+			
+			if "`showstats'"!= "" {
+				qui summ ytop`z' 				if `by'==`newx'
+				replace _mean`z' 	= r(mean) 	if `by'==`newx'
+				replace _sd`z' 		= r(sd) 	if `by'==`newx'
 			}
 		
 			drop y`z'_`newx'
@@ -363,6 +375,7 @@ if "`time'" != "" {
 ///////////////////////
 // no time variable  //
 ///////////////////////	
+**# without time
 
 	if "`time'"=="" {
 
@@ -406,6 +419,9 @@ if "`time'" != "" {
 				gen double _peakx`i'_`x' = .
 				gen double _peaky`i'_`x' = .
 				
+
+**# mark1 no time
+				
 				if "`mark'"!= "" {
 					if "`mark1'"!="max" & "`mark1'"!="peak" {
 						qui summ `z' if `by'==`x', d
@@ -417,18 +433,31 @@ if "`time'" != "" {
 						replace _peaky`i'_`x' = _y`i'_`x' if _y`i'_`x'==r(max)
 						replace _peakx`i'_`x' = _x`i'_`x' if _y`i'_`x'==r(max)
 					}
-				}	
+				}
+				
+				gen double _mean`i'`x' = .
+				gen double _sd`i'`x' = .				
+				
+				if "`showstats'"!= "" {
+					qui summ `z' if `by'==`x'
+					replace _mean`i'`x' = `r(mean)' in 1 
+					replace _sd`i'`x' = `r(sd)'	 in 1
+				}
+				
 			}
 			
-			local rshplist `rshplist' _x`i'_ _y`i'_ _peakx`i'_ _peaky`i'_
+			local rshplist `rshplist' _x`i'_ _y`i'_ _peakx`i'_ _peaky`i'_ _mean`i' _sd`i'
 			
 			local ++i
 		}
 		
 		// stack	
 		
-		keep  _y* _x* _peakx* _peaky*
+
+		keep  _y* _x* _peakx* _peaky* _mean* _sd* 
 		drop if _y1_1 ==.
+		
+		
 		
 		// add dummy line
 		
@@ -465,6 +494,7 @@ if "`time'" != "" {
 		// y labels 
 		gen double xpoint = .
 		gen double ypoint = .
+		gen double xstat = .
 		
 		gen y0 = 0
 		
@@ -519,14 +549,15 @@ if "`time'" != "" {
 
 		if "`labalt'" == ""  {
 			replace xpoint = `mymin' + `laboffset' if tag==1
+			replace xstat  = `mymax' - `laboffset' if tag==1
 		}
 		else  {	
 			replace xpoint = `mymax' + `laboffset' if tag==1	
+			replace xstat  = `mymin' - `laboffset' if tag==1
 		}	
 		
-		
-		
 	}	// end if block
+	
 	
 	
 ///////////////
@@ -665,7 +696,6 @@ if "`time'" != "" {
 		local mylegend legend(off)
 	}
 	
-		
 
 	if "`mark'"!= "" {	
 		
@@ -731,40 +761,41 @@ if "`time'" != "" {
 	}
 	
 	
+	if "`showstats'" != "" {
+		
+		generate _sumstat = "({&mu}=" + string(_mean1, "%7.2f") + " , {&sigma}=" + string(_sd1, "%7.2f") + ")"
+		
+		local statsize = `labsize' * 0.75
+		
+		local mystats (scatter ypoint xstat if tag==1, mcolor(none) mlabcolor(`labcolor') mlabel(_sumstat) mlabsize(`statsize') mlabposition(11) ) 		
+	}
 	
+
 	// draw 
 	
-	twoway 			///
-		`ylines'	///
-		`mygraph'	///
-		`mypeaks'	///
-		`mylabels'  ///
-		, 			///
-			`xreverse' ///
+	twoway 				///
+		`ylines'		///
+		`mygraph'		///
+		`mypeaks'		///
+		`mylabels'  	///
+		`mystats'		///
+		, 				///
+			`xreverse' 	///
 			ylabel(, nolabels noticks nogrid) yscale(noline) ///
 				`mylegend' `options'
 				
 				
 	*/
-	restore			
-	}
-
-
+restore			
+}
 
 end
-
-
 
 
 
 *********************************
 ******** END OF PROGRAM *********
 *********************************
-
-
-
-
-
 
 
 

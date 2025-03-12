@@ -10,10 +10,10 @@
 
 
 
-# joyplot v1.8
+# ridgeline v1.81
 (07 Jan 2025)
 
-This package provides the ability to draw joyplot or ridgeline plots in Stata. It is based on the [Joyplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I wrote in October 2020.
+This package provides the ability to draw ridgeline or joyplots in Stata. It is based on the [Ridgeline Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I wrote in October 2020.
 
 
 ## Installation
@@ -22,13 +22,13 @@ The package can be installed via SSC or GitHub. The GitHub version, *might* be m
 
 The package (**v1.71**) is available on SSC and can be installed as follows:
 ```
-ssc install joyplot, replace
+ssc install ridgeline, replace
 ```
 
-Or it can be installed from GitHub (**v1.8**):
+Or it can be installed from GitHub (**v1.81**):
 
 ```
-net install joyplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-joyplot/main/installation/") replace
+net install ridgeline, from("https://raw.githubusercontent.com/asjadnaqvi/stata-ridgeline/main/installation/") replace
 ```
 
 
@@ -62,25 +62,25 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-joyplot varlist [if] [in], by(variable) 
+ridgeline varlist [if] [in], by(variable) 
                 [ time(numvar) overlap(num) bwidth(num) palette(str) alpha(num) offset(num) lines droplow normalize(local | global) 
                   rescale offset(num) laboffset(num) lwidth(num) lcolor(str) ylabsize(num) ylabcolor(str) ylabposition(str)
                   yline ylcolor(str) ylwidth(str) ylpattern(str) xreverse yreverse n(num) mark(mark_options) 
                   legposition(num) legcolumns(num) legsize(num) * ]
 ```
 
-See the help file `help joyplot` for details.
+See the help file `help ridgeline` for details.
 
 The most basic use is as follows:
 
-```
-joyplot varlist, by(variable) time(variable)
+```stata
+ridgeline varlist, by(variable) time(variable)
 ```
 
 or
 
-```
-joyplot varlist, by(variable)
+```stata
+ridgeline varlist, by(variable)
 ```
 
 
@@ -95,7 +95,7 @@ clear
 set scheme white_tableau
 graph set window fontface "Arial Narrow"
 
-use "https://github.com/asjadnaqvi/stata-joyplot/blob/main/data/OWID_data.dta?raw=true", clear
+use "https://github.com/asjadnaqvi/stata-ridgeline/blob/main/data/OWID_data.dta?raw=true", clear
 
 drop if date < 22460
 keep if group10==1
@@ -109,66 +109,66 @@ format date %tdDD-Mon-yy
 We can generate basic graphs as follows:
 
 ```stata
-joyplot new_cases, by(country) time(date)
+ridgeline new_cases, by(country) time(date)
 ```
 
 <img src="/figures/joyplot1.png" width="100%">
 
 
 ```stata
-joyplot new_cases, by(country) t(date) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_0.png" width="100%">
 
 
 ```stata
-joyplot new_cases, by(country) t(date) yline bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) yline bwid(0.1) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_1.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) alpha(100) bwid(0.1) norm(local) palette(CET C7)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) alpha(100) bwid(0.1) norm(local) palette(CET C7)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_2.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) lc(black) palette(white) alpha(100) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lc(black) palette(white) alpha(100) bwid(0.1) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_3.png" width="100%">
 
 
 ```stata
-joyplot new_cases, by(country) t(date) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_4.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_5.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) lines lw(0.2) palette(black) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lines lw(0.2) palette(black) bwid(0.1) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_6.png" width="100%">
 
 
 ```stata
-joyplot new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) labalt norm(local) offset(8)  plotregion(margin(r+10))
+ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) labalt norm(local) offset(8)  plotregion(margin(r+10))
 ```
 
 <img src="/figures/joyplot1_7.png" width="100%">
 
 
 ```stata
-joyplot new_cases, by(country) t(date) lw(0.2) bwid(0.1) labalt xsize(2) ysize(1) norm(local)yline offset(10) plotregion(margin(r+10)) xlabel(#10, format(%tdDD-Mon-yy) angle(90))
+ridgeline new_cases, by(country) t(date) lw(0.2) bwid(0.1) labalt xsize(2) ysize(1) norm(local)yline offset(10) plotregion(margin(r+10)) xlabel(#10, format(%tdDD-Mon-yy) angle(90))
 ```
 
 <img src="/figures/joyplot1_8.png" width="100%">
@@ -177,7 +177,7 @@ joyplot new_cases, by(country) t(date) lw(0.2) bwid(0.1) labalt xsize(2) ysize(1
 Reverse the y-axis
 
 ```stata
-joyplot new_cases, by(country) t(date) bwid(0.1) yrev norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) yrev norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_9.png" width="100%">
@@ -186,7 +186,7 @@ joyplot new_cases, by(country) t(date) bwid(0.1) yrev norm(local) plotregion(mar
 Here we reverse both axes, but it is highly advisable not to do so with the x-axis:
 
 ```stata
-joyplot new_cases, by(country) t(date) bwid(0.1) yrev xrev norm(local) yline labpos(2)
+ridgeline new_cases, by(country) t(date) bwid(0.1) yrev xrev norm(local) yline labpos(2)
 ```
 
 <img src="/figures/joyplot1_10.png" width="100%">
@@ -195,25 +195,25 @@ joyplot new_cases, by(country) t(date) bwid(0.1) yrev xrev norm(local) yline lab
 ### Normalization
 
 ```stata
-joyplot new_cases, by(country) t(date) bwid(0.1) norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot2.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) bwid(0.1) overlap(15) norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(15) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot2_1.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) bwid(0.1) overlap(12) lines  norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(12) lines  norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot2_2.png" width="100%">
 
 ```stata
-joyplot new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(10) lw(none) norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(10) lw(none) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot3.png" width="100%">
@@ -227,11 +227,10 @@ summ date, meanonly
 local xmin = r(min)
 local xmax = r(max)
 
-
 joyplot new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(100) ///
 	lc(white) lw(0.2) xlabel(`xmin'(120)`xmax', labsize(2)) off(-30) norm(local) ///
 	xtitle("Date") plotregion(margin(l+10)) ///
-	title("{fontface Arial Bold:My joyplot/ridgeline plot}") subtitle("Some more text here")  ///
+	title("{fontface Arial Bold:My Ridgeline plot}") subtitle("Some text here")  ///
 	note("Some text here", size(vsmall)) 
 ```
 
@@ -246,10 +245,10 @@ summ date, meanonly
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
+ridgeline new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
 	lc(black) lw(0.1) xlabel(`xmin'(120)`xmax') off(-30)  norm(local) labc(white) /// 
 	xtitle("Date")  plotregion(margin(l+10)) ///
-	title("{fontface Arial Bold:My joyplot}") subtitle("a subtitle here", color(white)) ///
+	title("{fontface Arial Bold:My Ridgeline plot}") subtitle("a subtitle here", color(white)) ///
 	note("Some text here", size(vsmall)) scheme(neon)
 ```
 
@@ -264,7 +263,7 @@ summ date if date > 22425, meanonly
 local xmin = r(min)
 local xmax = r(max)
 	
-joyplot new_cases if date > 22425, by(country) t(date) overlap(10) bwid(0.1) palette(black) alpha(100) norm(local)  ///
+ridgeline new_cases if date > 22425, by(country) t(date) overlap(10) bwid(0.1) palette(black) alpha(100) norm(local)  ///
 	lc(white) lw(0.2) xlabel(none) laboff(40) labc(none)   /// 
 	xtitle("") ytitle("") ///
 	title("{fontface Arial Bold:The Joy Division look}") scheme(neon)
@@ -275,7 +274,7 @@ joyplot new_cases if date > 22425, by(country) t(date) overlap(10) bwid(0.1) pal
 
 ### v1.7 options
 
-In v1.7, `joyplot` can be replaced with `ridgeline`, peaks can be added to the ridges using the `mark(max)` option, and reference lines can be added using the `xline()` option:
+Peaks can be added to the ridges using the `mark(max)` option, and reference lines can be added using the `xline()` option:
 
 ```stata
 ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(3) mark(max, line) norm(local)  ///
@@ -288,7 +287,7 @@ ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(3) mark(max,
 ### v1.8 multiple variables
 
 ```stata
-joyplot new_cases_per_million hosp_patients_per_million, by(country) t(date) alpha(50) bwid(0.1) rescale norm(local) overlap(1)  
+ridgeline new_cases_per_million hosp_patients_per_million, by(country) t(date) alpha(50) bwid(0.1) rescale norm(local) overlap(1)  
 ```
 
 <img src="/figures/joyplot6_2.png" width="100%">
@@ -315,39 +314,39 @@ joyplot new_cases_per_million hosp_patients_per_million, by(country) t(date) alp
 Load the data that contains average USA state-level monthly temperatures for the period 1991-2020:
 
 ```stata
-use "https://github.com/asjadnaqvi/stata-joyplot/blob/main/data/us_meantemp.dta?raw=true", clear
+use "https://github.com/asjadnaqvi/stata-ridgeline/blob/main/data/us_meantemp.dta?raw=true", clear
 
 lab de month 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec", replace
 lab val month month
 ```
 
 ```stata
-joyplot meantemp, by(month)  
+ridgeline meantemp, by(month)  
 ```
 
-<img src="/figures/joyplot7_0.png" width="100%">
+<img src="/figures/ridgeline7_0.png" width="100%">
 
 
 ```stata
-joyplot meantemp, by(month) yline bwid(1.2)
+ridgeline meantemp, by(month) yline bwid(1.2)
 ```
 
 <img src="/figures/joyplot7_1.png" width="100%">
 
 ```stata
-joyplot meantemp, by(month) yline yrev  bwid(1.2)
+ridgeline meantemp, by(month) yline yrev  bwid(1.2)
 ```
 
 <img src="/figures/joyplot7_2.png" width="100%">
 
 ```stata
-joyplot meantemp, by(month)  yline ylw(0.2) ylc(blue) ylp(dot) labpos(right) bwid(1.2) laboffset(-3)
+ridgeline meantemp, by(month)  yline ylw(0.2) ylc(blue) ylp(dot) labpos(right) bwid(1.2) laboffset(-3)
 ```
 
 <img src="/figures/joyplot7_3.png" width="100%">
 
 ```stata
-joyplot meantemp, by(month) bwid(1.5) labs(3) overlap(3) yline yrev palette(CET C6) ///
+ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(3) yline yrev palette(CET C6) ///
 	xlabel(-20(10)30) ///
 	xtitle("degrees Centigrade") ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
@@ -363,7 +362,7 @@ qui summ meantemp
 local xmin = r(min)
 local xmax = r(max)
 
-joyplot meantemp, by(month) bwid(1.5) labs(3) overlap(3) yline palette(scico corkO) alpha(100) ///
+ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(3) yline palette(scico corkO) alpha(100) ///
 	xtitle("degrees Centigrade") xlabel(`xmin'(5)`xmax') ///
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
@@ -392,16 +391,16 @@ ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(3) lc(black) yline yrev 
 Load a dummy data set
 
 ```stata
-use "https://github.com/asjadnaqvi/stata-joyplot/blob/main/data/rescale_test.dta?raw=true", clear
+use "https://github.com/asjadnaqvi/stata-ridgeline/blob/main/data/rescale_test.dta?raw=true", clear
 
 drop if inlist(country, "Cambodia", "Myanmar", "Lao PDR")
 tab country
 ```
 
-Do a vanilla joyplot:
+Do a vanilla ridgeline:
 
 ```stata
-joyplot socMob, by(country) time(year)  ///
+ridgeline socMob, by(country) time(year)  ///
 	lc(white) lw(0.2) xlabel(1990(5)2020) plotregion(margin(l+8))
 ```
 
@@ -410,7 +409,7 @@ joyplot socMob, by(country) time(year)  ///
 Get rid of the overlaps. Here `overlap(1)` gives each country it's own box:
 
 ```stata
-joyplot socMob, by(country) time(year)  overlap(1) rescale  ///
+ridgeline socMob, by(country) time(year)  overlap(1) rescale  ///
 	lc(white) lw(0.2) xlabel(1990(5)2020) plotregion(margin(l+8))
 ```
 
@@ -421,7 +420,7 @@ Let's make a country unusable:
 ```stata
 drop if year < 2015 & country=="Vietnam"	
 
-joyplot socMob, by(country) time(year)  overlap(1)     ///
+ridgeline socMob, by(country) time(year)  overlap(1)     ///
 	lc(white) lw(0.2)  off(-2) xlabel(1990(5)2020) plotregion(margin(l+8))
 ```
 
@@ -429,7 +428,7 @@ joyplot socMob, by(country) time(year)  overlap(1)     ///
 The above code will produce an error message, highlighting where the error(s) exist. Let's throw these out using the `droplow` option:
 
 ```stata
-joyplot socMob, by(country) time(year)  overlap(1) droplow   ///
+ridgeline socMob, by(country) time(year)  overlap(1) droplow   ///
 	lc(white) lw(0.2)  off(-2) xlabel(1990(5)2020) plotregion(margin(l+8))
 ```
 
@@ -438,7 +437,7 @@ joyplot socMob, by(country) time(year)  overlap(1) droplow   ///
 And we rescale the data further to the minimum and maximum values:
 
 ```stata
-joyplot socMob, by(country) time(year) overlap(1) droplow rescale   ///
+ridgeline socMob, by(country) time(year) overlap(1) droplow rescale   ///
 	lc(white) lw(0.2)  off(-2) xlabel(1990(5)2020) plotregion(margin(l+8))
 ```
 
@@ -448,10 +447,15 @@ joyplot socMob, by(country) time(year) overlap(1) droplow rescale   ///
 
 ## Feedback
 
-Please open an [issue](https://github.com/asjadnaqvi/stata-joyplot/issues) to report errors, feature enhancements, and/or other requests. 
+Please open an [issue](https://github.com/asjadnaqvi/stata-ridgeline/issues) to report errors, feature enhancements, and/or other requests. 
 
 
 ## Change log
+
+**v1.81 (12 Mar 2025)**
+- Command is fully ported to `ridgeline` as the primary name. Option `joyplot` is still available.
+- Added option `showstats` to show mean and sd on the opposite side of the y-axis labels (requested by Kit Baum). This option is still beta and currenly only shows the summary statistics of the first variable in `varlist`.
+- Various code optimizations.
 
 **v1.8 (07 Jan 2025)**
 - Rewrite of base routines to make the code much faster.

@@ -1,7 +1,7 @@
-v 1.8
-d 'JOYPLOT': A Stata module for ridgeline plots
+v 1.81
+d 'RIDGELINE': A Stata module for ridgeline or joyplots
 d
-d Distribution-Date: 20250107
+d Distribution-Date: 20250312
 d
 d Asjad Naqvi
 d asjadnaqvi@gmail.com

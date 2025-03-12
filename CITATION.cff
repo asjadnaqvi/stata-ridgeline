@@ -2,7 +2,7 @@ cff-version: 1.2.0
 authors:
 - family-names: "Naqvi"
   given-names: "Asjad"
-title: "Stata package ``joyplot''"
-version: 1.8
-date-released: 2025-01-07
+title: "Stata package ``ridgeline''"
+version: 1.81
+date-released: 2025-03-12
 url: "https://github.com/asjadnaqvi/stata-joyplot"

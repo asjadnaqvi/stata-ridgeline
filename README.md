@@ -5,8 +5,9 @@
 
 ---
 
+![banner_ridgeline](https://github.com/user-attachments/assets/6a6468c6-20e0-44d4-a8c9-c3792f0dba86)
 
-![joyplot-1](https://github.com/asjadnaqvi/stata-joyplot/assets/38498046/b66818fe-38c7-4cd8-9f6c-cd2f62f3c0f3)
+
 
 
 # joyplot v1.8

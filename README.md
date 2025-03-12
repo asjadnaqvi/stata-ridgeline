@@ -84,8 +84,6 @@ ridgeline varlist, by(variable)
 ```
 
 
-
-
 ## Examples
 
 Set up the data:
@@ -116,39 +114,39 @@ ridgeline new_cases, by(country) time(date)
 
 
 ```stata
-ridgeline new_cases, by(country) t(date) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_0.png" width="100%">
 
 
 ```stata
-ridgeline new_cases, by(country) t(date) yline bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) yline bwid(0.1) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_1.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) alpha(100) bwid(0.1) norm(local) palette(CET C7)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) alpha(100) bwid(0.1) norm(local) palette(CET C7) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_2.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) lc(black) palette(white) alpha(100) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lc(black) palette(white) alpha(100) bwid(0.1) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_3.png" width="100%">
 
 
 ```stata
-ridgeline new_cases, by(country) t(date) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_4.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_5.png" width="100%">
@@ -213,7 +211,7 @@ ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(12) lines  norm(local
 <img src="/figures/joyplot2_2.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(10) lw(none) norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(10) lw(none)  norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot3.png" width="100%">
@@ -248,7 +246,7 @@ local xmax = r(max)
 ridgeline new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
 	lc(black) lw(0.1) xlabel(`xmin'(120)`xmax') off(-30)  norm(local) labc(white) /// 
 	xtitle("Date")  plotregion(margin(l+10)) ///
-	title("{fontface Arial Bold:My Ridgeline plot}") subtitle("a subtitle here", color(white)) ///
+	title("{fontface Arial Bold:My joyplot}") subtitle("A subtitle here", color(white)) ///
 	note("Some text here", size(vsmall)) scheme(neon)
 ```
 
@@ -283,6 +281,16 @@ ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(3) mark(max,
 
 <img src="/figures/joyplot6_1.png" width="100%">
 
+Add summary statistics to the figure:
+
+```stata
+ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(3) mark(max, line) norm(local) showstats  ///
+	palette(CET C6) plotregion(margin(l+10)) alpha(40)
+```
+
+<img src="/figures/joyplot6_1_1.png" width="100%">
+
+
 
 ### v1.8 multiple variables
 
@@ -296,14 +304,12 @@ ridgeline new_cases_per_million hosp_patients_per_million, by(country) t(date) a
 lab var new_cases_per_million "New cases per million"
 lab var hosp_patients_per_million "Hospital patients per million"
 
-
 summ date, meanonly
 
 local xmin = r(min)
 local xmax = r(max)
 
-
-joyplot new_cases_per_million hosp_patients_per_million, by(country) t(date) alpha(30) bwid(0.1) rescale norm(local) overlap(1) mark(max, line) ///
+ridgeline new_cases_per_million hosp_patients_per_million, by(country) t(date) alpha(30) bwid(0.1) rescale norm(local) overlap(1) mark(max, line) ///
 	xlabel(`xmin'(120)`xmax', format(%tdDD-Mon-yy) angle(90) labsize(2) nogrid)  plotregion(margin(l+8))
 ```
 
@@ -314,13 +320,14 @@ joyplot new_cases_per_million hosp_patients_per_million, by(country) t(date) alp
 Load the data that contains average USA state-level monthly temperatures for the period 1991-2020:
 
 ```stata
-use "https://github.com/asjadnaqvi/stata-ridgeline/blob/main/data/us_meantemp.dta?raw=true", clear
+use us_meantemp.dta, clear
 
 lab de month 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec", replace
 lab val month month
 ```
 
 ```stata
+
 ridgeline meantemp, by(month)  
 ```
 
@@ -334,7 +341,7 @@ ridgeline meantemp, by(month) yline bwid(1.2)
 <img src="/figures/joyplot7_1.png" width="100%">
 
 ```stata
-ridgeline meantemp, by(month) yline yrev  bwid(1.2)
+ridgeline meantemp, by(month) yline yrev bwid(1.2)
 ```
 
 <img src="/figures/joyplot7_2.png" width="100%">
@@ -367,7 +374,6 @@ ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(3) yline palette(scico c
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
 		xsize(3) ysize(5)
-
 ```
 
 <img src="/figures/joyplot7_5.png" width="100%">
@@ -381,10 +387,33 @@ ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(3) lc(black) yline yrev 
 	title("Mean average temperature in the USA") subtitle("2009-2020 average") ///
 	note("Source: World Bank Climate Change Knowledge Portal (CCKP).", size(vsmall)) ///
 		xsize(4) ysize(5) xline(0, lp(solid) lw(0.1) lc(gs12)) mark(max, line)
-
 ```
 
 <img src="/figures/joyplot7_6.png" width="100%">
+
+### v1.81 options
+
+Add summary statistics
+
+```stata
+ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(1) lc(black) yline yrev palette(CET D13) alpha(30) ///
+	xlabel(-20(10)30, nogrid) xtitle("degrees Centigrade") ///
+		xsize(4) ysize(5) mark(mean, line) ///
+		xline(0, lp(solid) lw(0.1) lc(gs12)) showstats
+```
+
+<img src="/figures/joyplot7_7.png" width="100%">
+
+
+```stata
+ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(1) lc(black) yline yrev palette(CET D13) alpha(30) ///
+	xlabel(-20(10)30, nogrid) xtitle("degrees Centigrade") ///
+		xsize(4) ysize(5) mark(max, line) ///
+		xline(0, lp(solid) lw(0.1) lc(gs12)) showstats
+```
+
+<img src="/figures/joyplot7_7_max.png" width="100%">
+
 
 ### Rescale and error checks (v1.6)
 

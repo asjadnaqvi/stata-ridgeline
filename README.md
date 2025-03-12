@@ -5,7 +5,8 @@
 
 ---
 
-![banner_ridgeline](https://github.com/user-attachments/assets/6a6468c6-20e0-44d4-a8c9-c3792f0dba86)
+![banner_ridgeline](https://github.com/user-attachments/assets/dececcfc-d194-40ce-9770-60c442efd20d)
+
 
 
 

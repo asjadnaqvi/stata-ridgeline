@@ -448,7 +448,7 @@ ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(1) lc(black) yline yrev 
 
 
 ```stata
-ridgeline meantemp, by(month) bwid(1.3) labs(3) overlap(1) yrev  yline alpha(30) ///
+ridgeline meantemp, by(month) bwid(1.3) labs(3) overlap(1) yline alpha(30) palette(CET D13) ///
 	xlabel(-20(5)30) xtitle("degrees Centigrade") ///
 		xsize(4) ysize(5) ///
 		xline(0, lp(solid) lw(0.1) lc(gs12)) ///
@@ -457,7 +457,7 @@ ridgeline meantemp, by(month) bwid(1.3) labs(3) overlap(1) yrev  yline alpha(30)
 ```
 
 
-<img src="/figures/joyplot7_7.png" width="100%">
+<img src="/figures/joyplot8_7.png" width="100%">
 
 
 

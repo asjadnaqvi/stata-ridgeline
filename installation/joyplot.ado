@@ -887,7 +887,7 @@ if "`time'" != "" {
 		`mystats'		///
 		, 				///
 			`xreverse' 	///
-			ylabel(, nolabels noticks nogrid) yscale(noline) ///
+				ylabel(#10, nolabels noticks nogrid) yscale(noline) ///
 				`mylegend' `options'
 				
 				

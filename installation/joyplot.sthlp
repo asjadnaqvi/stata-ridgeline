@@ -1,14 +1,15 @@
 {smcl}
-{* 12Mar2025}{...}
+{* 24Mar2025}{...}
 {hi:help ridgeline/joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-ridgeline":ridgeline/joyplot v1.81 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-ridgeline":ridgeline/joyplot v1.9 (GitHub)}}
 
 {hline}
 
 {title:ridgeline}: A Stata module for ridgeline or joyplots. 
 
 This package is derived from the following guide on Medium: {browse "https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d":Ridgeline plots (Joy plots)}.
-{cmd:ridgeline} is also mirrored as {cmd:joyplot}.
+
+The command {cmd:ridgeline} is also mirrored as {cmd:joyplot} and these can be used interchangeably.
 
 {marker syntax}{title:Syntax}
 {p 8 15 2}
@@ -16,7 +17,7 @@ This package is derived from the following guide on Medium: {browse "https://med
 {cmd:ridgeline} {it:varlist} {ifin}, {cmd:by}({it:variable}) 
                 {cmd:[} {cmdab:t:ime}({it:numvar}) {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:palette}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmd:lines} {cmd:droplow} {cmdab:norm:alize}({it:local} | {it:global}) 
                   {cmd:rescale} {cmdab:off:set}({it:num}) {cmdab:laboff:set}({it:num}) {cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
-                  {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmd:n}({it:num}) {cmdab:mark}({it:mark_options}) {cmd:showstats} 
+                  {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmd:n}({it:num}) {cmdab:mark}({it:options}) {cmd:stats}({it:options}) 
                   {cmdab:legpos:ition}({it:num}) {cmdab:legcol:umns}({it:num}) {cmdab:legs:ize}({it:num}) {cmd:*} {cmd:]}
 {p 4 4 2}
 
@@ -30,7 +31,7 @@ If the option {opt time()} is specified, the command will draw lowess curves for
 Otherwise, kernel densities for {it:varlist} are drawn. If more than one variable is specified, then the legends are enabled.
 Legends will prioritize variable labels, otherwise variable names will be used. Here, {cmd:joyplot} can be used as a substitute for {cmd:ridgeline}.{p_end}
 
-{p2coldent : {opt t:ime(num var)}}Define a numerical time variable if required.{p_end}
+{p2coldent : {opt t:ime(num var)}}Define a numerical time variable (if required).{p_end}
 
 {p2coldent : {opt by(variable)}}This variable defines the layers that split the data into layers. If there are fewer than 10 observations per {opt by()} group,
 the program will throw a warning message. This is important to flag since the program might not be able to generate density functions for very few observations.
@@ -81,12 +82,15 @@ order of the categories, it is not recommended to use {opt xrev} unless absolute
 {p 4 4 2}
 {it:{ul:Markers and statistics} (beta)}
 
-{p2coldent : {opt mark(max [, line])}}Defining {opt mark(max)} will mark the highest point on each ridgeline. If option {opt mark(max, line)} is used, then droplines
-will be plotted instead.{p_end}
+{p2coldent : {opt mark(statistic [, line sort])}}Defining {opt mark(statistic)} will mark the desired statistic on each ridge. If option {opt time()} is specified, then only {opt mark(max)} is allowed.
+Otherwise common options are {opt mark(max)}, {opt mark(mean)}, {opt mark(median)}, etc. or whatever is return from {opt summary}. 
+Option {opt mark(max, line)} will show droplines for the desired statistic.
+Option {opt mark(max, sort)} will sort the ridges according to the desired statistic. If multiple variables are specified, then sort will be based on the first variable in {it:varlist}.
+Option {opt mark(, sort)} can be combined with {opt yrev} to reverse the sorting. Option {opt mark(mean2)} is a special case, that shows both mean and standard deviation if option {opt stats()} is specified.
 
-{p2coldent : {opt showstats}}Show mean and standard deviation of the plotted variable. Note that this option is currently beta and only shows the values for
-the first variable in {it:varlist}. The values are plotted on the opposite side of the axis and are 75% of the marker size. These options will be improved
-in the future.{p_end}
+{p2coldent : {opt stats([options])}}Show the statistics for the option specified in {opt mark()}. These will be text markers above the 
+desired statistics. Additionally, the option {opt mark(mean2)} will show {opt stats()} as "(\mu = <mean>, \sigma = <sd>").
+The markers can be customized using standard twoway options, e.g. {opt stats(mlabcolor(gs6) mlabsize(1.8) mlabpos(12) mlabgap(0))}.{p_end}
 
 
 {p 4 4 2}
@@ -158,8 +162,8 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {title:Package details}
 
-Version      : {bf:ridgeline} v1.81
-This release : 12 Mar 2025
+Version      : {bf:ridgeline} v1.9
+This release : 24 Mar 2025
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/ridgeline":GitHub}
 Keywords     : Stata, graph, ridgeline, joyplot

@@ -1,8 +1,8 @@
-*! ridgeline v1.81 (12 Mar 2025)
+*! joyplot v1.9 (24 Mar 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-
-* v1.81 (12 Mar 2025): sumstat now add mean and sd statistics (still beta)
+* v1.9  (24 Mar 2025): mark() is stricter. only max is allowed with time(). mark(mean2) now marks mean and sd. sort is now allowed. showstats is now just stats()
+* v1.81 (12 Mar 2025): showstats option adds mean and sd statistics (still beta). Request by Kit Baum.
 * v1.8  (07 Jan 2025): Port to new syntax. multiple variables are now allowed. ylab etc is now just lab. Many improvements to default variables
 *                      ylabposition is now labalt. time dimension now need the time() option. Backend data is now stacked resulting in a much faster drawing.
 *					   code is now many time faster. peaks renamed to mark()
@@ -43,13 +43,11 @@ version 15
 		[ NORMalize(str) rescale droplow  ] ///  // v1.6 options
 		[ LABOFFset(real 0) OFFset(real 0)  n(real 100) ]  ///  // v1.62 and v1.7 options
 		[ * LABColor(string) LABSize(string) labalt LABAngle(string) LABPOSition(string) LEGPOSition(real 6) LEGCOLumns(real 3) LEGSize(real 2.2) ] ///   			// v1.8
-		[ mark(string) peaksize(real 0.2) ]  ///
-		[ asis steps showstats ] // todo
+		[ MARK(string) peaksize(real 0.2) ]  ///
+		[ STATS STATS2(string asis) format(string) ] // todo
 	
 	/* TODO
 	add binning.
-	add over() to allow splits varlists.
-	add ability to sort by peaks.
 	*/
 		
 		
@@ -90,18 +88,34 @@ version 15
 		local poptions `3'
 	}	
 	
-	if "`mark'"!="" {			
-		tokenize "`mark'", p(",")
+	
+	local _sortme 0
+	local _lineme 0
+	local _mean2 0
+	
+	if "`mark'"!=""  {			
+		tokenize "`mark'", p("," " ")
 		
-		local mark1 `1'
-		local mark2 `3'
+		local _mk1 `1'
+		local _mk2 `3'  // line?
+		local _mk3 `4'  // sort?
 		
-		if "`mark1'" == "median" local mark1 p50
-
+		if "`_mk1'" == "median" local _mk1 p50  // exception since we cannot pass median
+		if "`_mk1'" == "mean2" {
+			local  _mk1 mean 
+			local _mean2 = 1
+		}
+		
+		if ("`_mk2'" == "sort" | "`_mk3'" == "sort") local _sortme 1
+		if ("`_mk2'" == "line" | "`_mk3'" == "line") local _lineme 1
+		
 	}
+	
 	
 	marksample touse, strok
 	
+	
+
 quietly {
 preserve	
 	
@@ -216,6 +230,16 @@ preserve
 
 if "`time'" != "" {
 
+	if "`mark'"!= "" {
+		if "`_mk1'"!="max" & "`_mk1'"!="peak" {
+					
+		display as error "Only {bf:mark(max)} or {bf:mark(peak)} is allowed if {bf:time()} is specified."
+		exit
+					
+		}
+	}
+	
+	
 	foreach x of local varlist {
 		replace `x' = 0 if `x' < 0   // TODO: see how to deal with negative values. v1.6: Suggest rescale option
 	}
@@ -262,7 +286,8 @@ if "`time'" != "" {
 			local ++i	
 		}
 	}	
-	else  {
+	
+	if "`normalize'" == "local"  {
 		levelsof `by', local(lvls)
 	
 		local i = 1
@@ -273,7 +298,8 @@ if "`time'" != "" {
 			
 			foreach y of local lvls {
 				 summ `x' if `by'==`y' & !missing(`x') , meanonly
-				 replace norm`i' = `x' / r(max) if `by'==`y'
+				 replace norm`i' = `x' / `r(max)' if `by'==`y'
+				 
 			}
 			local ++i	
 		}
@@ -325,39 +351,82 @@ if "`time'" != "" {
 			
 			lowess norm`z' `time' if `by'==`newx', bwid(`bwidth') gen(y`z'_`newx') nograph
 
-			replace ybot`z' =  `newx' / `overlap'  	if `by'==`newx'
-			replace ytop`z' = y`z'_`newx' + ybot`z'	if `by'==`newx'
 			 
 **# mark1 time
 			
+			
 			if "`mark'"!= "" {
-				if "`mark1'"!="max" & "`mark1'"!="peak" {
-
-					summ ytop`z' if `by'==`newx', d
-					summ ytop`z' if ytop`z' >= r(`mark1') & `by'==`newx', meanonly
-					
-					replace peaky`z'= ytop`z' if `by'==`newx' & ytop`z'==r(max)
-					replace peakx`z'= `time'  if `by'==`newx' & !missing(peaky`z')
-				}
-				else {
-					
-					summ ytop`z' if `by'==`newx'
+				summ y`z'_`newx' if `by'==`newx'
 					 
-					replace peaky`z' = ytop`z' if ytop`z'==r(max) &  `by'==`newx'
-					replace peakx`z' = `time'  if ytop`z'==r(max) &  `by'==`newx'
-				}
+				replace peaky`z' = r(max) if tag==1 & `by'==`newx' //  ytop`z' if ytop`z'==r(max) &  `by'==`newx'
+					
+				summ `time' if `by'==`newx' & y`z'_`newx'==r(max)
+				replace peakx`z' = `r(mean)' if tag==1 & `by'==`newx'
+				
 			}
-			
-			
-			if "`showstats'"!= "" {
-				qui summ ytop`z' 				if `by'==`newx'
-				replace _mean`z' 	= r(mean) 	if `by'==`newx'
-				replace _sd`z' 		= r(sd) 	if `by'==`newx'
-			}
-		
-			drop y`z'_`newx'
 		}		
 	}
+
+	
+	if `_sortme' == 1 {
+	
+		egen _rank = rank(peakx1), u
+	
+		if "`yreverse'" != "" {
+			summ _rank, meanonly
+			replace _rank = r(max) - _rank + 1
+			
+		}
+	
+			
+		carryforward _rank, replace
+		decode `by', gen(_temp)
+		labmask _rank, val(_temp)
+			
+		drop _temp // `by'
+		ren `by' _by_old
+		ren _rank _by
+			
+	}
+	
+
+	
+	levelsof `by', local(lvls)
+	
+	forval z = 1/`length' {
+	
+		foreach x of local lvls {
+			
+			summ `by'
+			local newx = r(max) + 1 - `x'  
+			
+			replace ybot`z' =  `newx' / `overlap'  	if `by'==`newx'
+			
+			
+			if `_sortme' == 1 {
+				summ _by_old if `by'==`newx'
+				local _index = r(mean)
+			}
+			else {
+				local _index = `newx'
+			}
+			
+			replace ytop`z' = y`z'_`_index' + ybot`z'	if `by'==`newx'
+			replace peaky`z' = peaky`z' + ybot`z'		if `by'==`newx'
+			
+			drop y`z'_`_index'
+			
+			if "`stats'" != "" | "`stats2'" != "" {
+					qui summ ytop`z' 				if `by'==`newx'
+					replace _mean`z' 	= r(mean) 	if `by'==`newx' & !missing(peaky`z')
+					replace _sd`z' 		= r(sd) 	if `by'==`newx' & !missing(peaky`z')
+			}
+		}
+	}
+	
+	
+	
+	
 	
 	forval z = 1/`length' {
 		summ ybot`z' if `by'==1, meanonly
@@ -367,9 +436,8 @@ if "`time'" != "" {
 		replace ytop`z'  = ytop`z'  - `shift'
 		replace peaky`z' = peaky`z' - `shift'
 	}
+	
 }	
-
-
 
 
 ///////////////////////
@@ -423,25 +491,28 @@ if "`time'" != "" {
 **# mark1 no time
 				
 				if "`mark'"!= "" {
-					if "`mark1'"!="max" & "`mark1'"!="peak" {
+					if "`_mk1'"!="max" & "`_mk1'"!="peak" {
+						
 						qui summ `z' if `by'==`x', d
-						replace _peakx`i'_`x'= r(`mark1') in 1
+						replace _peakx`i'_`x'= r(`_mk1') in 1
 						replace _peaky`i'_`x' = .
 					}
 					else {
 						summ _y`i'_`x', meanonly
-						replace _peaky`i'_`x' = _y`i'_`x' if _y`i'_`x'==r(max)
-						replace _peakx`i'_`x' = _x`i'_`x' if _y`i'_`x'==r(max)
+						replace _peaky`i'_`x' = r(max) in 1 // _y`i'_`x' if _y`i'_`x'==r(max)
+						
+						summ _x`i'_`x' if _y`i'_`x'==r(max), meanonly 
+						replace _peakx`i'_`x' = r(max) in 1 // _x`i'_`x' if _y`i'_`x'==r(max)
 					}
 				}
 				
 				gen double _mean`i'`x' = .
-				gen double _sd`i'`x' = .				
+				gen double _sd`i'`x'   = .				
 				
-				if "`showstats'"!= "" {
-					qui summ `z' if `by'==`x'
-					replace _mean`i'`x' = `r(mean)' in 1 
-					replace _sd`i'`x' = `r(sd)'	 in 1
+				if "`stats'" != "" | "`stats2'" != "" {
+					qui summ `z' if `by'==`x', d
+					replace _mean`i'`x' = r(`_mk1')  if !missing(_peakx`i'_`x')
+					replace _sd`i'`x' 	= `r(sd)'	 if !missing(_peakx`i'_`x')
 				}
 				
 			}
@@ -453,10 +524,8 @@ if "`time'" != "" {
 		
 		// stack	
 		
-
 		keep  _y* _x* _peakx* _peaky* _mean* _sd* 
 		drop if _y1_1 ==.
-		
 		
 		
 		// add dummy line
@@ -465,13 +534,31 @@ if "`time'" != "" {
 		
 		gen _id = _n
 		
+				
 		reshape long `rshplist', i(_id) j(_myvar)
 		
 		local by _myvar
-		
+
 		lab val `by' _by
 		sort `by' _id
 		
+		
+		if `_sortme' == 1 {
+			if "`yreverse'" == "" {
+				egen _rank = rank(_peakx1_), f
+			}
+			else {
+				egen _rank = rank(_peakx1_), t
+			}
+			
+			carryforward _rank, replace
+			decode `by', gen(_temp)
+			labmask _rank, val(_temp)
+			
+			drop `by' _temp 
+			ren _rank _myvar
+		}
+
 		ren _y*_ y*
 		ren _x*_ x*
 		ren _peakx*_ peakx*
@@ -515,7 +602,7 @@ if "`time'" != "" {
 				replace ybot`z' =  `x' / `overlap'      if `by'==`x'
 				replace ytop`z' = y`z' + ybot`z'		if `by'==`x'
                 
-				if "`mark'"!="" & ("`mark1'"!="max" | "`mark1'"!="peak") {
+				if "`mark'"!="" & ("`_mk1'"!="max" | "`_mk1'"!="peak") {
 					summ peakx`z' if `by'==`x' & !missing(peakx`z'), meanonly
 					summ ytop`z'  if x`z' >= r(mean) & `by'==`x', meanonly
 					replace peaky`z' = r(max) if `by'==`x' & !missing(peakx`z')
@@ -556,7 +643,11 @@ if "`time'" != "" {
 			replace xstat  = `mymin' - `laboffset' if tag==1
 		}	
 		
+		
+		*/
+		
 	}	// end if block
+	
 	
 	
 	
@@ -564,7 +655,7 @@ if "`time'" != "" {
 // Compile  ///
 ///////////////
 
-
+	
 	if `length'==1 {
 		
 		levelsof `by', local(lvls)
@@ -580,7 +671,7 @@ if "`time'" != "" {
 				if "`lines'" != "" {
 					
 					colorpalette `palette', n(`items') nograph `poptions'
-					local mygraph `mygraph' line ytop`z' `time' if `by'==`newx', lc("`r(p`newx')'") lw(`lwidth') || 
+					local mygraph `mygraph' line ytop`z' `time' if `by'==`newx', lc("`r(p`newx')'") lw(`lwidth') ||
 					
 				}
 				else {
@@ -617,7 +708,7 @@ if "`time'" != "" {
 				if "`lines'" != "" {
 					
 					colorpalette `palette', n(`items') nograph `poptions'
-					local mygraph `mygraph' line ytop`z' `time' if `by'==`newx', lc("`r(p`z')'") lw(`lwidth') || 
+					local mygraph `mygraph' line ytop`z' `time' if `by'==`newx', lc("`r(p`z')'") lw(`lwidth') ||
 					
 				}
 				else {
@@ -697,6 +788,7 @@ if "`time'" != "" {
 	}
 	
 
+	// markers
 	if "`mark'"!= "" {	
 		
 		if `length'==1 {
@@ -705,7 +797,8 @@ if "`time'" != "" {
 			local items = `r(r)'	
 			
 			forval z = 1/`items' {
-				if "`mark2'"!="line" {
+				if `_lineme' != 1 {
+					
 					colorpalette `palette', n(`items') nograph `poptions'
 					local mypeaks `mypeaks' (scatter peaky1 peakx1 if !missing(peakx1) & `by'==`z' , msym(circle) msize(`peaksize') mcolor("`r(p`z')'")) 
 				}
@@ -720,7 +813,7 @@ if "`time'" != "" {
 			local items = `length'
 			
 			forval z = 1/`length' {
-				if "`mark2'"!="line" {		
+				if `_lineme' != 1 {		
 					colorpalette `palette', n(`items') nograph `poptions'
 					
 					local mypeaks `mypeaks' (scatter peaky`z' peakx`z' if !missing(peakx`z') , msym(circle) msize(`peaksize') mcolor("`r(p`z')'")) 
@@ -732,7 +825,6 @@ if "`time'" != "" {
 			}				
 		}
 	}
-	
 	
 	
 	if "`labcolor'" == ""  local labcolor 	black	
@@ -761,13 +853,27 @@ if "`time'" != "" {
 	}
 	
 	
-	if "`showstats'" != "" {
+
+
+	if "`format'" == "" local format %12.2f
+	
+	if ("`stats'" != "" | "`stats2'" != "") {
 		
-		generate _sumstat = "({&mu}=" + string(_mean1, "%7.2f") + " , {&sigma}=" + string(_sd1, "%7.2f") + ")"
+		egen _staty = rowmax(peaky*) 
 		
-		local statsize = `labsize' * 0.75
+		forval z = 1/`length' {
+			
+			if `_mean2' == 1 {
+				generate _sumstat`z' = "({&mu}=" + string(_mean`z', "`format'") + ", {&sigma}=" + string(_sd`z', "`format'") + ")" if !missing(_mean`z')
+			}
+			else {		
+				generate _sumstat`z' = string(peakx`z', "`format'")  if !missing(_mean`z')
+			}
 		
-		local mystats (scatter ypoint xstat if tag==1, mcolor(none) mlabcolor(`labcolor') mlabel(_sumstat) mlabsize(`statsize') mlabposition(11) ) 		
+			local mystats `mystats' (scatter _staty peakx`z', mcolor(none) mlabel(_sumstat`z') `stats2' ) 		
+		
+		}
+		
 	}
 	
 
@@ -790,6 +896,7 @@ restore
 }
 
 end
+
 
 
 

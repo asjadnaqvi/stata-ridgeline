@@ -11,8 +11,8 @@
 
 
 
-# ridgeline v1.81
-(07 Jan 2025)
+# ridgeline v1.9
+(24 Jan 2025)
 
 This package provides the ability to draw ridgeline or joyplots in Stata. It is based on the [Ridgeline Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I wrote in October 2020.
 
@@ -21,12 +21,12 @@ This package provides the ability to draw ridgeline or joyplots in Stata. It is 
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-The package (**v1.71**) is available on SSC and can be installed as follows:
+The package (**v1.81**) is available on SSC and can be installed as follows:
 ```
 ssc install ridgeline, replace
 ```
 
-Or it can be installed from GitHub (**v1.81**):
+Or it can be installed from GitHub (**v1.9**):
 
 ```
 net install ridgeline, from("https://raw.githubusercontent.com/asjadnaqvi/stata-ridgeline/main/installation/") replace
@@ -66,8 +66,9 @@ The syntax for the latest version is as follows:
 ridgeline varlist [if] [in], by(variable) 
                 [ time(numvar) overlap(num) bwidth(num) palette(str) alpha(num) offset(num) lines droplow normalize(local | global) 
                   rescale offset(num) laboffset(num) lwidth(num) lcolor(str) ylabsize(num) ylabcolor(str) ylabposition(str)
-                  yline ylcolor(str) ylwidth(str) ylpattern(str) xreverse yreverse n(num) mark(mark_options) 
+                  yline ylcolor(str) ylwidth(str) ylpattern(str) xreverse yreverse n(num) mark(options) stats(options) 
                   legposition(num) legcolumns(num) legsize(num) * ]
+
 ```
 
 See the help file `help ridgeline` for details.
@@ -89,7 +90,7 @@ ridgeline varlist, by(variable)
 
 Set up the data:
 
-```
+```stata
 clear
 set scheme white_tableau
 graph set window fontface "Arial Narrow"
@@ -141,7 +142,7 @@ ridgeline new_cases, by(country) t(date) lc(black) palette(white) alpha(100) bwi
 
 
 ```stata
-ridgeline new_cases, by(country) t(date) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lc(white) palette(black) alpha(50) lw(0.05) bwid(0.1) norm(local)  plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_4.png" width="100%">
@@ -153,21 +154,22 @@ ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) norm(local) plo
 <img src="/figures/joyplot1_5.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) lines lw(0.2) palette(black) bwid(0.1) norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) lines lw(0.2) palette(black) bwid(0.1) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot1_6.png" width="100%">
 
 
 ```stata
-ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) labalt norm(local) offset(8)  plotregion(margin(r+10))
+ridgeline new_cases, by(country) t(date) lines lw(0.2) bwid(0.1) labalt norm(local) offset(8) plotregion(margin(r+10))
 ```
 
 <img src="/figures/joyplot1_7.png" width="100%">
 
 
 ```stata
-ridgeline new_cases, by(country) t(date) lw(0.2) bwid(0.1) labalt xsize(2) ysize(1) norm(local)yline offset(10) plotregion(margin(r+10)) xlabel(#10, format(%tdDD-Mon-yy) angle(90))
+ridgeline new_cases, by(country) t(date) lw(0.2) bwid(0.1) labalt xsize(2) ysize(1) norm(local)yline offset(10) ///
+	plotregion(margin(r+10)) xlabel(#10, format(%tdDD-Mon-yy) angle(90))
 ```
 
 <img src="/figures/joyplot1_8.png" width="100%">
@@ -206,13 +208,13 @@ ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(15) norm(local) plotr
 <img src="/figures/joyplot2_1.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(12) lines  norm(local) plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(12) lines norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot2_2.png" width="100%">
 
 ```stata
-ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(10) lw(none)  norm(local)  plotregion(margin(l+10))
+ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(10) lw(none) norm(local) plotregion(margin(l+10))
 ```
 
 <img src="/figures/joyplot3.png" width="100%">
@@ -226,10 +228,11 @@ summ date, meanonly
 local xmin = r(min)
 local xmax = r(max)
 
-joyplot new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(100) ///
+
+ridgeline new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(100) ///
 	lc(white) lw(0.2) xlabel(`xmin'(120)`xmax', labsize(2)) off(-30) norm(local) ///
 	xtitle("Date") plotregion(margin(l+10)) ///
-	title("{fontface Arial Bold:My Ridgeline plot}") subtitle("Some text here")  ///
+	title("{fontface Arial Bold:My ridgeline plot}") subtitle("Some text here")  ///
 	note("Some text here", size(vsmall)) 
 ```
 
@@ -247,7 +250,7 @@ local xmax = r(max)
 ridgeline new_cases, by(country) t(date) overlap(8) bwid(0.1) palette(CET C1) alpha(90) ///
 	lc(black) lw(0.1) xlabel(`xmin'(120)`xmax') off(-30)  norm(local) labc(white) /// 
 	xtitle("Date")  plotregion(margin(l+10)) ///
-	title("{fontface Arial Bold:My joyplot}") subtitle("A subtitle here", color(white)) ///
+	title("{fontface Arial Bold:My ridgeline plot}") subtitle("subtitle", color(white)) ///
 	note("Some text here", size(vsmall)) scheme(neon)
 ```
 
@@ -282,16 +285,24 @@ ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(3) mark(max,
 
 <img src="/figures/joyplot6_1.png" width="100%">
 
-Add summary statistics to the figure:
+Sort:
 
 ```stata
-ridgeline new_cases, by(country) t(date) bwid(0.1) off(-20) overlap(3) mark(max, line) norm(local) showstats  ///
+ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(3) mark(max, line sort) norm(local) format(%tdDD-Mon-yy)  ///
 	palette(CET C6) plotregion(margin(l+10)) alpha(40)
 ```
 
 <img src="/figures/joyplot6_1_1.png" width="100%">
 
 
+Add summary statistics to the figure:
+
+```stata
+ridgeline new_cases, by(country) t(date) bwid(0.1) overlap(3) mark(max, line sort) norm(local) stats format(%tdDD-Mon-yy)  ///
+	palette(CET C6) plotregion(margin(l+10)) alpha(40)
+```
+
+<img src="/figures/joyplot6_1_2.png" width="100%">
 
 ### v1.8 multiple variables
 
@@ -302,19 +313,39 @@ ridgeline new_cases_per_million hosp_patients_per_million, by(country) t(date) a
 <img src="/figures/joyplot6_2.png" width="100%">
 
 ```stata
+gen year = year(date)
+drop if year >= 2023
+
 lab var new_cases_per_million "New cases per million"
 lab var hosp_patients_per_million "Hospital patients per million"
+
 
 summ date, meanonly
 
 local xmin = r(min)
 local xmax = r(max)
 
+
 ridgeline new_cases_per_million hosp_patients_per_million, by(country) t(date) alpha(30) bwid(0.1) rescale norm(local) overlap(1) mark(max, line) ///
 	xlabel(`xmin'(120)`xmax', format(%tdDD-Mon-yy) angle(90) labsize(2) nogrid)  plotregion(margin(l+8))
 ```
 
 <img src="/figures/joyplot6_3.png" width="100%">
+
+
+
+
+```stata
+ridgeline new_cases_per_million hosp_patients_per_million, by(country) t(date) alpha(30) bwid(0.1) rescale norm(local) overlap(1) ///
+	xlabel(, format(%tdDD-Mon-yy) angle(90) labsize(2) nogrid)  plotregion(margin(l+8)) ///
+	mark(max, line sort ) ///
+	stats(mlabcolor(gs6) mlabsize(1.2) mlabpos(12) mlabgap(0)) format(%tdDD-Mon-yy)
+```
+
+<img src="/figures/joyplot6_4.png" width="100%">
+
+
+
 
 ## Without time variable
 
@@ -328,7 +359,6 @@ lab val month month
 ```
 
 ```stata
-
 ridgeline meantemp, by(month)  
 ```
 
@@ -392,7 +422,7 @@ ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(3) lc(black) yline yrev 
 
 <img src="/figures/joyplot7_6.png" width="100%">
 
-### v1.81 options
+### v1.9 options
 
 Add summary statistics
 
@@ -400,7 +430,7 @@ Add summary statistics
 ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(1) lc(black) yline yrev palette(CET D13) alpha(30) ///
 	xlabel(-20(10)30, nogrid) xtitle("degrees Centigrade") ///
 		xsize(4) ysize(5) mark(mean, line) ///
-		xline(0, lp(solid) lw(0.1) lc(gs12)) showstats
+		xline(0, lp(solid) lw(0.1) lc(gs12)) stats
 ```
 
 <img src="/figures/joyplot7_7.png" width="100%">
@@ -410,11 +440,87 @@ ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(1) lc(black) yline yrev 
 ridgeline meantemp, by(month) bwid(1.5) labs(3) overlap(1) lc(black) yline yrev palette(CET D13) alpha(30) ///
 	xlabel(-20(10)30, nogrid) xtitle("degrees Centigrade") ///
 		xsize(4) ysize(5) mark(max, line) ///
-		xline(0, lp(solid) lw(0.1) lc(gs12)) showstats
+		xline(0, lp(solid) lw(0.1) lc(gs12)) stats
 ```
 
 <img src="/figures/joyplot7_7_max.png" width="100%">
 
+
+
+```stata
+ridgeline meantemp, by(month) bwid(1.3) labs(3) overlap(1) yrev  yline alpha(30) ///
+	xlabel(-20(5)30) xtitle("degrees Centigrade") ///
+		xsize(4) ysize(5) ///
+		xline(0, lp(solid) lw(0.1) lc(gs12)) ///
+		mark(mean2, line sort) ///
+		stats(mlabcolor(gs6) mlabsize(1.8) mlabpos(12) mlabgap(0))
+```
+
+
+<img src="/figures/joyplot7_7.png" width="100%">
+
+
+
+### v1.8 additions
+
+```stata
+sysuse citytemp.dta, clear
+
+ridgeline tempjan, by(region) 
+```
+
+<img src="/figures/joyplot8_1.png" width="100%">
+
+
+```stata
+ridgeline tempjan, by(region) bwid(1.5) overlap(2) yline
+```
+
+<img src="/figures/joyplot8_2.png" width="100%">
+
+```stata
+ridgeline tempjan tempjuly, by(region) bwid(1.5) overlap(2) yline
+```
+
+<img src="/figures/joyplot8_3.png" width="100%">
+
+```stata
+ridgeline tempjan tempjuly, by(region) bwid(1.3) overlap(2) yline mark(max) alpha(50)
+```
+
+<img src="/figures/joyplot8_4.png" width="100%">
+
+```stata
+ridgeline tempjan tempjuly, by(region) bwid(1.3) overlap(2) yline mark(max, line) alpha(50)
+```
+
+<img src="/figures/joyplot8_5.png" width="100%">
+
+```stata
+ridgeline tempjan tempjuly, by(region) bwid(1.3) overlap(1) yline mark(max, line) alpha(50)
+```
+
+<img src="/figures/joyplot8_6.png" width="100%">
+
+
+Try another dataset:
+
+
+```stata
+sysuse bpwide.dta, clear
+
+ridgeline bp_before bp_after, by(sex) overlap(1) yline bwid(5) mark(peak, line) alpha(20) palette(okabe)
+```
+
+<img src="/figures/joyplot9.png" width="100%">
+
+```
+ridgeline bp_before bp_after, by(sex) overlap(1) yline bwid(5) ///
+	mark(max, line sort) alpha(20) ///
+	stats(mlabcolor(gs6) mlabsize(1.8) mlabpos(12) mlabgap(0))
+```
+
+<img src="/figures/joyplot9_1.png" width="100%">
 
 ### Rescale and error checks (v1.6)
 
@@ -481,6 +587,15 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ridgeline/issues) to 
 
 
 ## Change log
+
+**v1.9 (24 Mar 2025)**
+- Option `showstats()` is now just `stats()`.
+- Complete rework of `mark()` and `stats()` for better control and display.
+- If `time()` is specified, then only `mark(max)` is allowed. This is because time series data does not have a mean on the vertical axis but on the horizontal axis.
+- Special option `mark(mean2)` will display summary statistics as "(\mu = mean, \sigma = standard deviation)".
+- Option `stats()` now allows all mark customization options for better fine tuning.
+- Option `mark(<statistic>, sort)` added. If multiple variables are specified in `varlist`, then the first variable will be used for sorting. This option was highly requested. 
+- Several code fixes.
 
 **v1.81 (12 Mar 2025)**
 - Command is fully ported to `ridgeline` as the primary name. Option `joyplot` is still available.

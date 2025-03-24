@@ -3,6 +3,6 @@ authors:
 - family-names: "Naqvi"
   given-names: "Asjad"
 title: "Stata package ``ridgeline''"
-version: 1.81
-date-released: 2025-03-12
-url: "https://github.com/asjadnaqvi/stata-joyplot"
+version: 1.9
+date-released: 2025-03-24
+url: "https://github.com/asjadnaqvi/stata-ridgeline"

@@ -32,12 +32,13 @@ Or it can be installed from GitHub (**v1.9**):
 net install ridgeline, from("https://raw.githubusercontent.com/asjadnaqvi/stata-ridgeline/main/installation/") replace
 ```
 
-
-The `palettes` package is required to run this command:
+The following dependencies are required:
 
 ```
 ssc install palettes, replace
 ssc install colrspace, replace
+ssc install graphfunctions, replace
+ssc install labutil, replace
 ```
 
 Even if you have the package installed, make sure that it is updated `ado update, update`.

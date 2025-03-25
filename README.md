@@ -22,19 +22,20 @@ This package provides the ability to draw ridgeline or joyplots in Stata. It is 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
 The package (**v1.81**) is available on SSC and can be installed as follows:
-```
+
+```stata
 ssc install ridgeline, replace
 ```
 
 Or it can be installed from GitHub (**v1.9**):
 
-```
+```stata
 net install ridgeline, from("https://raw.githubusercontent.com/asjadnaqvi/stata-ridgeline/main/installation/") replace
 ```
 
 The following dependencies are required:
 
-```
+```stata
 ssc install palettes, replace
 ssc install colrspace, replace
 ssc install graphfunctions, replace
@@ -45,7 +46,7 @@ Even if you have the package installed, make sure that it is updated `ado update
 
 If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
 
-```
+```stata
 ssc install schemepack, replace
 set scheme white_tableau  
 ```
@@ -54,7 +55,7 @@ You can also push the scheme directly into the graph using the `scheme(schemenam
 
 I also prefer narrow fonts in figures with long labels. You can change this as follows:
 
-```
+```stata
 graph set window fontface "Arial Narrow"
 ```
 

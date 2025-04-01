@@ -15,8 +15,9 @@ The command {cmd:ridgeline} is also mirrored as {cmd:joyplot} and these can be u
 {p 8 15 2}
 
 {cmd:ridgeline} {it:varlist} {ifin}, {cmd:by}({it:variable}) 
-                {cmd:[} {cmdab:t:ime}({it:numvar}) {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:palette}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmd:lines} {cmd:droplow} {cmdab:norm:alize}({it:local} | {it:global}) 
-                  {cmd:rescale} {cmdab:off:set}({it:num}) {cmdab:laboff:set}({it:num}) {cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:ylabpos:ition}({it:str})
+                {cmd:[} {cmdab:t:ime}({it:numvar}) {cmd:overlap}({it:num}) {cmdab:bwid:th}({it:num}) {cmd:palette}({it:str}) {cmd:alpha}({it:num}) {cmdab:off:set}({it:num}) {cmd:lines} {cmd:droplow}
+                  {cmdab:norm:alize}({it:local}|{it:global}) {cmd:rescale} {cmdab:off:set}({it:num}) {cmdab:laboff:set}({it:num}) {cmdab:labyoff:set}({it:num}) 
+                  {cmdab:lw:idth}({it:num}) {cmdab:lc:olor}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmdab:labpos:ition}({it:str})
                   {cmdab:yl:ine} {cmdab:ylc:olor}({it:str}) {cmdab:ylw:idth}({it:str}) {cmdab:ylp:attern}({it:str}) {cmdab:xrev:erse} {cmdab:yrev:erse} {cmd:n}({it:num}) {cmdab:mark}({it:options}) {cmd:stats}({it:options}) 
                   {cmdab:legpos:ition}({it:num}) {cmdab:legcol:umns}({it:num}) {cmdab:legs:ize}({it:num}) {cmd:*} {cmd:]}
 {p 4 4 2}
@@ -47,14 +48,14 @@ In this case try changing the bandwidth value using option {opt bwid()}.{p_end}
 A value of {opt overlap(1)} implies that each {opt by()} group is drawn in its own horizontal space without overlaps.{p_end}
 
 {p2coldent : {opt palette(str)}}{opt palette} uses any named scheme defined in the {stata help colorpalette:colorpalette} package.
-Default is {stata colorpalette tableau:{it:tableau}}. Here, one can also pass single colors, such as {it:palette(black)}.{p_end}
+Default is {stata colorpalette tableau:{it:tableau}}. Here, one can also pass single colors, such as {opt palette(black)}.{p_end}
 
 {p2coldent : {opt alpha(num)}}Transparency of the area fills. Default value is {opt alpha(80)} for 80% transparency.{p_end}
 
 {p2coldent : {opt lines}}Draw colored lines instead of area fills.
-The option {opt lcolor()} does not work here. Instead use the {cmd:palette()} option. Option {opt lwidth()} is permitted.{p_end}
+The option {opt lcolor()} does not work here. Instead use the {opt palette()} option. Option {opt lwidth()} is permitted.{p_end}
 
-{p2coldent : {opt norm:alize(local|global)}}Normalize by the local or global maximum of the {it:varlist} variable. The default is set to {it:global}, but in certain circumstances,
+{p2coldent : {opt norm:alize(local|global)}}Normalize by the local or global maximum of the {it:varlist} variable. The default is set to {opt norm(global)}, but in certain circumstances,
 users might want to look at the distribution of a variable within the {opt by()} group. In this case use {opt norm(local)}.{p_end}
 
 {p2coldent : {opt rescale}}This option is used to rescale the data such that the global minimum value is set to 0.
@@ -110,11 +111,17 @@ The markers can be customized using standard twoway options, e.g. {opt stats(mla
 
 {p2coldent : {opt labalt}}Place the labels on the righthand-side of the axes.{p_end}
 
-{p2coldent : {opt labpos:ition(str)}}The position of the labels. The default is {opt ylabpos(9)} or {opt ylabpos(3)} if {opt labalt} is used.{p_end}
+{p2coldent : {opt labpos:ition(str)}}The position of the labels. The default is {opt labpos(9)} or {opt labpos(3)} if {opt labalt} is used.{p_end}
 
 {p2coldent : {opt labs:ize(str)}}Label size. Default is {opt labs(1.6)}.{p_end}
 
 {p2coldent : {opt labc:olor(str)}}Label color. Default is {opt labc(black)}.{p_end}
+
+{p2coldent : {opt laboff:set(num)}}Label offset on the x-axis. Positive values move the labels left while negative values move them right.
+Default is {opt laboff(0)}.{p_end}
+
+{p2coldent : {opt labyoff:set(num)}}Label offset on the y-axis. Positive values move the labels up while negative values move them down.
+Default is {opt laboff(0)}.{p_end}
 
 
 {p 4 4 2}
@@ -128,7 +135,7 @@ The markers can be customized using standard twoway options, e.g. {opt stats(mla
 
 
 
-{p2coldent : {opt n(num)}}Advanced option for increasing the number of observations for generating ridgeline densities when {opt time()} is not specified. Default is {opt n(50)}.{p_end}
+{p2coldent : {opt n(num)}}Advanced option for increasing the number of observations for generating ridgeline densities when {opt time()} is not specified. Default is {opt n(100)}.{p_end}
 
 {p2coldent : {opt *}}All other standard twoway options not elsewhere specified.{p_end}
 

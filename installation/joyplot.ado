@@ -41,10 +41,10 @@ version 15
 		[ LColor(string) LWidth(string) 	] ///
 		[ YLine YLColor(string) YLPattern(string) YLWidth(real 0.04) YREVerse XREVerse 	] ///
 		[ NORMalize(str) rescale droplow  ] ///  // v1.6 options
-		[ LABOFFset(real 0) OFFset(real 0)  n(real 100) ]  ///  // v1.62 and v1.7 options
+		[ OFFset(real 0)  n(real 100) ]  ///  // v1.62 and v1.7 options
 		[ * LABColor(string) LABSize(string) labalt LABAngle(string) LABPOSition(string) LEGPOSition(real 6) LEGCOLumns(real 3) LEGSize(real 2.2) ] ///   			// v1.8
 		[ MARK(string) peaksize(real 0.2) ]  ///
-		[ STATS STATS2(string asis) format(string) ] // todo
+		[ STATS STATS2(string asis) format(string) LABOFFset(real 0) LABYOFFset(real 0) ] // todo
 	
 	/* TODO
 	add binning.
@@ -198,6 +198,11 @@ preserve
 				decode `by', gen(`tempov')		
 				labmask _by, val(`tempov')
 			}
+			else {
+				tostring `by', gen(`tempov')
+				labmask _by, val(`tempov')
+			}
+			
 			local by _by
 		}
 	
@@ -644,7 +649,7 @@ if "`time'" != "" {
 		}	
 		
 		
-		*/
+		
 		
 	}	// end if block
 	
@@ -772,7 +777,7 @@ if "`time'" != "" {
 		
 	// get the ypoint in order
 	
-	replace ypoint = ( ybot1) if tag==1	
+	replace ypoint = ybot1 + `labyoffset' if tag==1	
 		
 	// legend entries	
 	if `length' > 1 {
@@ -886,7 +891,7 @@ if "`time'" != "" {
 		`mylabels'  	///
 		`mystats'		///
 		, 				///
-			`xreverse' 	///
+			`xreverse' xscale(range(`x1' `x2')) 	///
 				ylabel(#10, nolabels noticks nogrid) yscale(noline) ///
 				`mylegend' `options'
 				

@@ -597,6 +597,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ridgeline/issues) to 
 - Special option `mark(mean2)` will display summary statistics as "(\mu = mean, \sigma = standard deviation)".
 - Option `stats()` now allows all mark customization options for better fine tuning.
 - Option `mark(<statistic>, sort)` added. If multiple variables are specified in `varlist`, then the first variable will be used for sorting. This option was highly requested. 
+- Option `laboffset()` offsets the labels on the x-axis, and option `labyoffset()` offsets the label on the y-axis.
+- Default evaluation is on 100 points per ridgeline. Previously this was 50 points. This option can be changed using the `n()` option.
+- Better tolerance added to avoid white-space on the top of the ridges.
+- Several options were missing or incorrectly specified in the helpfile. These have been fixed.
 - Several code fixes.
 
 **v1.81 (12 Mar 2025)**

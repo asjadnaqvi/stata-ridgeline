@@ -591,7 +591,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ridgeline/issues) to 
 ## Change log
 
 **v1.91 (13 May 2025)**
-- Fixed a bug where labels were not passing correctly (report by @marshallwg).
+- Fixed a bug where labels were not passing correctly (report by [Marshall Garland](https://github.com/marshallwg)).
 
 **v1.9 (24 Mar 2025)**
 - Option `showstats()` is now just `stats()`.

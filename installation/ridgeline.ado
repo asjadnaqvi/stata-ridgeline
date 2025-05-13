@@ -1,7 +1,6 @@
-*! ridgeline v1.9 (24 Mar 2025)
+*! ridgeline v1.91 (13 May 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-**** joyplot program duplicate
 
 cap program drop ridgeline
 

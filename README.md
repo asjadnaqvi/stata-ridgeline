@@ -11,8 +11,8 @@
 
 
 
-# ridgeline v1.9
-(24 Mar 2025)
+# ridgeline v1.91
+(13 May 2025)
 
 This package provides the ability to draw ridgeline or joyplots in Stata. It is based on the [Ridgeline Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-8-joy-plots-ridge-line-plots-dbe022e7264d) that I wrote in October 2020.
 
@@ -27,7 +27,7 @@ The package (**v1.81**) is available on SSC and can be installed as follows:
 ssc install ridgeline, replace
 ```
 
-Or it can be installed from GitHub (**v1.9**):
+Or it can be installed from GitHub (**v1.91**):
 
 ```stata
 net install ridgeline, from("https://raw.githubusercontent.com/asjadnaqvi/stata-ridgeline/main/installation/") replace
@@ -589,6 +589,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ridgeline/issues) to 
 
 
 ## Change log
+
+**v1.91 (13 May 2025)**
+- Fixed a bug where labels were not passing correctly (report by @marshallwg).
 
 **v1.9 (24 Mar 2025)**
 - Option `showstats()` is now just `stats()`.

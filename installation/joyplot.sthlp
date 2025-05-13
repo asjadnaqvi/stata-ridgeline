@@ -1,7 +1,7 @@
 {smcl}
-{* 24Mar2025}{...}
+{* 13May2025}{...}
 {hi:help ridgeline/joyplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-ridgeline":ridgeline/joyplot v1.9 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-ridgeline":ridgeline/joyplot v1.91 (GitHub)}}
 
 {hline}
 
@@ -169,8 +169,8 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {title:Package details}
 
-Version      : {bf:ridgeline} v1.9
-This release : 24 Mar 2025
+Version      : {bf:ridgeline} v1.91
+This release : 13 May 2025
 First release: 13 Dec 2021
 Repository   : {browse "https://github.com/asjadnaqvi/ridgeline":GitHub}
 Keywords     : Stata, graph, ridgeline, joyplot

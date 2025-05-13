@@ -1,4 +1,4 @@
-v 1.9
+v 1.91
 d {bf:RIDGELINE}: A Stata package for ridgeline or joyplots.
 d See {bf:help ridgeline} after installation.
 d
@@ -10,9 +10,9 @@ d KW: joyplot
 d KW: ridgeline plot
 d
 d
-d Distribution-Date: 20250324
+d Distribution-Date: 20250513
 d
-d This  version: 24 Mar 2025
+d This  version: 13 May 2025
 d First version: 05 Dec 2021
 d License: MIT
 d

@@ -1,6 +1,7 @@
-*! joyplot v1.9 (24 Mar 2025)
+*! joyplot v1.91 (13 May 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.91 (13 May 2025): Fixed a bug where labels were not passing correctly after an internal reshape.
 * v1.9  (24 Mar 2025): mark() is stricter. only max is allowed with time(). mark(mean2) now marks mean and sd. sort is now allowed. showstats is now just stats()
 * v1.81 (12 Mar 2025): showstats option adds mean and sd statistics (still beta). Request by Kit Baum.
 * v1.8  (07 Jan 2025): Port to new syntax. multiple variables are now allowed. ylab etc is now just lab. Many improvements to default variables
@@ -529,7 +530,7 @@ if "`time'" != "" {
 		
 		// stack	
 		
-		keep  _y* _x* _peakx* _peaky* _mean* _sd* 
+		keep  _y* _x* _peakx* _peaky* _mean* _sd* `by'
 		drop if _y1_1 ==.
 		
 		
